@@ -292,3 +292,69 @@ app.get('/list', function(req, res){
 Congrats! We succesfully added fixtures into our app.
 
 ## Login Form
+
+Let's create our login form.
+
+![Login Form]()
+
+To begin, we need to add the `/login` route, into our `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
+var Persons = require('../models/persons.js');
+var Admins = require('../models/admins.js');
+
++app.get('/login', function(req, res){
++    res.render('login', { title: 'Login'});
++});
++
+app.get('/list', function(req, res){
+    var msg = req.flash('message');
+```
+
+Secondlly, we do create the view file `./views/login.jade`:
+
+```javascript
+extends layout
+
+block content
+  h1= title
+  form(action='/login',method='post')
+    div
+      label(for='email') E-mail:
+      input(type='text', name='email', id='email', placeholder='E-mail here...')
+    div
+      label(for='password') Pasword:
+      input(type='password', name='password', id='password', placeholder='Password...')
+    div
+      input(type='submit', value='Login')
+  style.
+    form label { min-width: 80px; display: inline-block; }
+    form > div { padding: 5px; }
+```
+
+Finally we do set the POST url `/login` to receive the login form data, for now we add just a mock to catch and display data received. So we do add the following into `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
+var Persons = require('../models/persons.js');
+var Admins = require('../models/admins.js');
+
+app.get('/login', function(req, res){
+    res.render('login', { title: 'Login'});
+});
+
++app.post('/login', function(req, res){
++    res.json(req.body);
++});
++
+app.get('/list', function(req, res){
+    var msg = req.flash('message');
+    Persons.find({}, function(err, docs){
+```
+
+To test all that you can simply go to [http://localhost:3000/login](http://localhost:3000/login), and by submitting data you should be able to get the data inserted back. Don't you worry, just go ahead with next step we'll get back to this POST url later.
+
+![Post Login JSON]()
+
+## Passport
