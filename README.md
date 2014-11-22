@@ -235,4 +235,8 @@ $ npm start
 
 And go to [http://localhost:3000/list](http://localhost:3000/list):
 
-![]()
+![Fixtures List](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/fixtures-list.png)
+
+As you can see persons fixtures have been preloaded, also notice that everytime you restart the server mongoose-fixtures will empty your collections and fill them with specified datasets. Try adding and/or removing and restarting the server.
+
+
