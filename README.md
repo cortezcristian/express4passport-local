@@ -239,4 +239,56 @@ And go to [http://localhost:3000/list](http://localhost:3000/list):
 
 As you can see persons fixtures have been preloaded, also notice that everytime you restart the server mongoose-fixtures will empty your collections and fill them with specified datasets. Try adding and/or removing and restarting the server.
 
+Let's do the same with the admins so we can have at least one administrator available to do our implementation. Add `fixtures/admins.js` file:
 
+```javascript
+exports.Admins = [
+    { email: 'admin@admin.com', password: '123456' }
+];
+
+```
+
+And do the following changes into `app.js`
+
+```javascript
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session')
+var flash = require('connect-flash');
+
+var routes = require('./routes/index');
+var users = require('./routes/user');
+
+var mongoose = require('mongoose');
+var fixtures = require('mongoose-fixtures');
+
+mongoose.connect('mongodb://localhost/crudtest');
+
++fixtures.load('./fixtures/admins.js');
+fixtures.load('./fixtures/persons.js');
+
+```
+
+Include the model inside `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
+var Persons = require('../models/persons.js');
++var Admins = require('../models/admins.js');
+
+app.get('/list', function(req, res){
+    var msg = req.flash('message');
+    Persons.find({}, function(err, docs){
+        res.render('list', { title: 'List', persons: docs, flashmsg: msg});
+    });
+});
+.....
+```
+
+Congrats! We succesfully added fixtures into our app.
+
+## Login Form
