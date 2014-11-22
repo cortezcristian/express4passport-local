@@ -73,4 +73,39 @@ null { __v: 0,
 
 Something is really bad here. Did you noticed? We are storing a plain password, that's not good let's improve our model a little bit:
 
+```javascript
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
++var crypto = require('crypto');
 
+var adminSchema = new Schema({
+    email: String,
+    password: String
+});
+
++/**
++ * Pre-Save Hook
++ * http://mongoosejs.com/docs/api.html#schema_Schema-pre
++ */
++
++adminSchema.pre("save", function(next) {
++    if(this.isModified('password'))
++        this.password = crypto.createHash('md5').update(this.password).digest("hex");
++    next();
++});
+
+var adminModel = mongoose.model('Admins', adminSchema);
+
+module.exports = adminModel;
+```
+We just added the [crypto module](http://nodejs.org/api/crypto.html) to use the MD5 hash creation method, we are also adding functionallity to add a [pre-save hook](http://mongoosejs.com/docs/api.html#schema_Schema-pre) to our schema definition. 
+
+```bash
+$ node test/admins-test.js 
+null { __v: 0,
+  email: 'admin@admin.com',
+  password: 'e10adc3949ba59abbe56e057f20f883e',
+  _id: 546fed1f3561b0641e4eb34b }
+```
+
+As we can see now if password is modified we automatically turn that into a MD5 hash.
