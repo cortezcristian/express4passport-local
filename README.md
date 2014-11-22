@@ -46,5 +46,31 @@ var adminModel = mongoose.model('Admins', adminSchema);
 module.exports = adminModel;
 ```
 
-So we have the basic model,
+So we have the basic model, let's create a basic test `test/admins-test.js`:
+```javascript
+var Admin = require('../models/admins');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/crudtest');
+
+var a = new Admin({ email:"admin@admin.com", password: "123456" });
+a.save(function(err, doc){
+    console.log(err, doc);    
+});
+
+```
+
+If we run this, we'll create an admin.
+
+```bash
+$ node test/admins-test.js
+null { __v: 0,
+  email: 'admin@admin.com',
+  password: '123456',
+  _id: 546fe06f0aff37711bb5a517 }
+
+```
+
+Something is really bad here. Did you noticed? We are storing a plain password, that's not good let's improve our model a little bit:
+
 
