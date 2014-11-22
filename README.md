@@ -108,4 +108,68 @@ null { __v: 0,
   _id: 546fed1f3561b0641e4eb34b }
 ```
 
-As we can see now if password is modified we automatically turn that into a MD5 hash.
+As we can see now if password is modified we automatically turn that into a MD5 hash. Let's create and authentication method so each admin can test passwords.
+
+```javascript
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var crypto = require('crypto');
+
+var adminSchema = new Schema({
+    email: String,
+    password: String
+});
+
+/**
+ * Pre-Save Hook
+ * http://mongoosejs.com/docs/api.html#schema_Schema-pre
+ */
+
+adminSchema.pre("save", function(next) {
+    if(this.isModified('password'))
+        this.password = crypto.createHash('md5').update(this.password).digest("hex");
+    next();
+});
++
++adminSchema.method('authenticate', function(password) {
++    return crypto.createHash('md5').update(password).digest("hex") === this.password;
++});
+
+var adminModel = mongoose.model('Admins', adminSchema);
+
+module.exports = adminModel;
+```
+
+And we can test it by modifying our test `./test/admins-test.js`.
+
+```javascript
+var Admin = require('../models/admins');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/crudtest');
+
+var a = new Admin({ email:"admin@admin.com", password: "123456" });
+a.save(function(err, doc){
+    console.log(err, doc);    
++
++    console.log("PasswordOK", a.authenticate("123456"));
++    console.log("PasswordFAIL", a.authenticate("incorrect"));
+});
+
+```
+
+We can test again our method to see if it works:
+
+```bash
+$ node test/admins-test.js 
+null { __v: 0,
+  email: 'admin@admin.com',
+  password: 'e10adc3949ba59abbe56e057f20f883e',
+  _id: 546ff176b6c3be1a20c3a734 }
+PasswordOK true
+PasswordFAIL false
+```
+
+That's it we have our admin model ready.
+
+## Adding Fixtures

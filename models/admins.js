@@ -18,6 +18,10 @@ adminSchema.pre("save", function(next) {
     next();
 });
 
+adminSchema.method('authenticate', function(password) {
+    return crypto.createHash('md5').update(password).digest("hex") === this.password;
+});
+
 var adminModel = mongoose.model('Admins', adminSchema);
 
 module.exports = adminModel;
