@@ -30,3 +30,21 @@ Now we want to add a local authentication layer to protect the listed urls. We a
 
 ## Create Admin Model
 
+Let's create a basic model `./models/admins.js` with basic credentials fields like so:
+
+```javascript
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var adminSchema = new Schema({
+    email: String,
+    password: String
+});
+
+var adminModel = mongoose.model('Admins', adminSchema);
+
+module.exports = adminModel;
+```
+
+So we have the basic model,
+
