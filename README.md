@@ -170,6 +170,12 @@ PasswordOK true
 PasswordFAIL false
 ```
 
-That's it we have our admin model ready.
+That's it! we have our admin model ready.
 
 ## Adding Fixtures
+
+Fixtures a data-sets we store in our programming language and sync them with the DB when necessary. They are important specially when running tests, or if you don't want to show your webapp empty. In this example, we are going to use [mongoose-fixtures](https://github.com/powmedia/mongoose-fixtures) to pre-load persons and admins everytime we start the server.
+
+```bash
+$ npm install --save mongoose-fixtures
+```
