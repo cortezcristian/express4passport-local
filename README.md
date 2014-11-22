@@ -295,7 +295,7 @@ Congrats! We succesfully added fixtures into our app.
 
 Let's create our login form.
 
-![Login Form]()
+![Login Form](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/login-form.png)
 
 To begin, we need to add the `/login` route, into our `./routes/main.js`:
 
@@ -355,6 +355,12 @@ app.get('/list', function(req, res){
 
 To test all that you can simply go to [http://localhost:3000/login](http://localhost:3000/login), and by submitting data you should be able to get the data inserted back. Don't you worry, just go ahead with next step we'll get back to this POST url later.
 
-![Post Login JSON]()
+![Post Login JSON](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/login-form-json.png)
 
 ## Passport
+
+Passport is authentication middleware for Node.js, that works really well with Express, see [http://passportjs.org/](http://passportjs.org/). Passport let you define strategies, for this project we'll need Passport core, and passport-local package. So let's install them:
+
+```bash
+$ npm install --save passport passport-local
+```
