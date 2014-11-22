@@ -179,3 +179,10 @@ Fixtures a data-sets we store in our programming language and sync them with the
 ```bash
 $ npm install --save mongoose-fixtures
 ```
+
+Let's create a folder to store our fixtures.
+
+```bash
+$ mkdir fixtures
+```
+
