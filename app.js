@@ -11,8 +11,11 @@ var routes = require('./routes/index');
 var users = require('./routes/user');
 
 var mongoose = require('mongoose');
+var fixtures = require('mongoose-fixtures');
 
 mongoose.connect('mongodb://localhost/crudtest');
+
+fixtures.load('./fixtures/persons.js');
 
 var app = exports.app = express();
 

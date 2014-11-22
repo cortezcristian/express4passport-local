@@ -15,7 +15,7 @@ We are assuming that you already completed the [CRUD tutorial](https://github.co
 Now we want to add a local authentication layer to protect the listed urls. We are creating an administrator role, that'll access the private urls via login in a new url called `/login`. Let's enumerate a list of tasks we do need to accomplish for this to happen:
 
 1. Create Admin model. (Model: `./models/admin.js`)
-2. Add an admin fixture, to be preloaded when server start. (Credentials: admin@admin.com:123456)
+2. Add an admin fixture, to be preloaded when server starts. (Credentials: admin@admin.com:123456)
 3. Create `/login` route. (Route: `./routes/main.js`)
 4. Create a login form. (View: `./views/login.jade`)
 5. Create Passport Local Strategy
@@ -186,3 +186,53 @@ Let's create a folder to store our fixtures.
 $ mkdir fixtures
 ```
 
+Let's create an admin fixture ``:
+
+```bash
+$ mkdir fixtures
+```
+
+Let's create a file to store persons personal data `fixtures/persons.js`:
+
+```javascript
+exports.Persons = [
+    { name: 'Cristian', age: 27 },
+    { name: 'Maria', age: 22 },
+    { name: 'Ignacio', age: 32 }
+];
+```
+
+We do need to add the new package into our `app.js`
+
+```javascript
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session')
+var flash = require('connect-flash');
+
+var routes = require('./routes/index');
+var users = require('./routes/user');
+
+var mongoose = require('mongoose');
++var fixtures = require('mongoose-fixtures');
+
+mongoose.connect('mongodb://localhost/crudtest');
++
++fixtures.load('./fixtures/persons.js');
+
+var app = exports.app = express();
+....
+```
+
+If we run the server again:
+```bash
+$ npm start
+```
+
+And go to [http://localhost:3000/list](http://localhost:3000/list):
+
+![]()
