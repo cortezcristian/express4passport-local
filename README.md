@@ -537,7 +537,13 @@ GET /list 200 35.769 ms - 892
 
 ```
 
+We can do a similar test to probe, the failure case, just go ahead and change the password. And try again:
 
+```javascript
++        .fill('password', 'incorrect')
+```
+
+We'll wrap all this test into a single test suite later on.
 
 ## Securitize Routes
 
