@@ -482,6 +482,63 @@ It's possible to automate the kind of test mentioned before. Let's make our requ
 3. Expected result: you should be redirected to http://localhost:3000/login
 ```
 
+For doing that we can use [zombie.js](https://github.com/assaf/zombie/) that is a lightweight framework for headless testing, that is a browser emulation that runs without a graphic interface (no GUI). To install it, just run:
+
+```bash
+$ npm install zombie --save-dev
+```
+
+Once installed we can create a file to make a quick test, call it `./test/headless-tests.js`:
+
+```javascript
+var Browser = require('zombie');
+var assert  = require('assert');
+
+Browser.localhost('localhost', 3000);
+
+// create new browser instance
+var browser = Browser.create();
+
+browser.visit('/login', function(err){
+    browser
+        .fill('email', 'admin@admin.com')
+        .fill('password', '123456')
+        .pressButton('Login', function(err){
+            console.log('Success Test: ', browser.document.location.pathname);
+        });
+});
+
+```
+
+In order to run this test, we need to have the webapp up and running in one console and open a second console:
+
+`zombie.js test`
+
+```bash
+$ node test/headless-tests.js 
+
+Success Test:  /list
+
+```
+
+Look in the terminal where you are running express, you'll be able to see zombie.js requests:
+
+`express server`
+
+```bash
+$ npm start
+
+> express4crud@0.0.1 start /var/www/express4passport-local
+> node ./bin/www
+
+GET /login 200 263.565 ms - 708
+POST /login 302 39.529 ms - 66
+GET /list 200 35.769 ms - 892
+
+```
+
+
+
 ## Securitize Routes
 
 It'll be good to add some extra validation, to prevent unauthorized users access to the CRUD urls.

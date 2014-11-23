@@ -26,6 +26,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "request": "~2.36.0",
     "time-grunt": "~0.3.2",
-    "load-grunt-tasks": "~0.6.0"
+    "load-grunt-tasks": "~0.6.0",
+    "zombie": "~2.2.1"
   }
 }
