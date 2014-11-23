@@ -734,3 +734,15 @@ app.get('/list', adminAuth, function(req, res){
 ```
 
 Well... we are done! If you reach this point it means you successfully completed the authentication layer integration.
+
+## Final
+
+If you want to see the complete demo, you can go ahead and clone this repo.
+
+```bash
+$ git clone git@github.com:cortezcristian/express4passport-local.git
+```
+
+## Moving Forward
+
+During the past 2 tutorials we've been generating, different kind of tests. It'll be good to wrap them all inside a test suite with mocha. That'll be our next tutorial.
