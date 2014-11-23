@@ -612,5 +612,80 @@ GET / 304 16.337 ms -
 
 Please securitize all the routes by adding adminAuth as first operation, excepting `/` and `/login`.
 
-##
+## Destroying Session Data
 
+Once we login there's no way to logout let's add a log-out link. For doing that we can start modifying the main layout `./views/layout.jade`:
+
+```jade
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width')
+    title= title
+    block css
+      link(rel='stylesheet', href='/css/style.css')
+    block js
+      script(src='http://localhost:35729/livereload.js')
+  body
++    -if (user) {
++    ul#menu
++      li Welcome
++        b  #{user.email}
++      li
++        a(href="/logout") Sign-Off
++    style.
++      ul#menu { 
++        display:block; 
++        list-style: none;  
++        position: fixed;
++        top: 0;
++        background: #ccc;
++        margin: 0;
++        left: 0;
++        width: 100%;
++        padding: 10px 20px; 
++      }
++      ul#menu li { 
++        float: left; 
++        padding: 0 10px;
++      }
++    - }
+    block content
+```
+
+Just added a menu list and some style. Let's make a user variable be available for all templates, modifying `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
+var passport = module.parent.exports.passport;
+var Persons = require('../models/persons.js');
+var Admins = require('../models/admins.js');
+
+var adminAuth = function(req, res, next){
+    //authorize role
+    if(typeof req.user != "undefined"){
+        next();
+    }else{
+        //Not authorized redirect
+        res.redirect('/');
+    }
+}
+
++app.use(function(req, res, next) {
++    res.locals.user = req.user;
++    next();
++});
++
+app.get('/login', function(req, res){
+    res.render('login', { title: 'Login'});
+});
+
+app.post('/login', passport.authenticate('AdminLogin', 
+```
+
+If we restart the server and login again, we'll be able to see a top bar menu:
+
+![]()
+
+Now it's time to destroy session data.

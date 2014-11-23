@@ -9,4 +9,27 @@ html(lang='en')
     block js
       script(src='http://localhost:35729/livereload.js')
   body
+    -if (user) {
+    ul#menu
+      li Welcome
+        b  #{user.email}
+      li
+        a(href="/logout") Sign-Off
+    style.
+      ul#menu { 
+        display:block; 
+        list-style: none;  
+        position: fixed;
+        top: 0;
+        background: #ccc;
+        margin: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px 20px; 
+      }
+      ul#menu li { 
+        float: left; 
+        padding: 0 10px;
+      }
+    - }
     block content
