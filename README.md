@@ -1,4 +1,4 @@
-Express 4.x and Passport Local Example
+Express 4.x and Passport Auth Layer
 =====================
 
 We are assuming that you already completed the [CRUD tutorial](https://github.com/cortezcristian/express4crud). The main application has this urls:
