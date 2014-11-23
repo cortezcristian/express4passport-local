@@ -186,12 +186,6 @@ Let's create a folder to store our fixtures.
 $ mkdir fixtures
 ```
 
-Let's create an admin fixture ``:
-
-```bash
-$ mkdir fixtures
-```
-
 Let's create a file to store persons personal data `fixtures/persons.js`:
 
 ```javascript
@@ -364,3 +358,79 @@ Passport is authentication middleware for Node.js, that works really well with E
 ```bash
 $ npm install --save passport passport-local
 ```
+
+Let's move on linking passport to our express webapp, in the `app.js` head we require passport:
+
+```javascript
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session')
+var flash = require('connect-flash');
++var passport = exports.passport = require('passport');
+
+```
+
+And then around line 33, we include the following:
+
+```javascript
+ app.use(bodyParser.urlencoded({
+ app.use(cookieParser());
+ app.use(express.static(path.join(__dirname, 'public')));
+ app.use(session({secret: 'supersecret', saveUninitialized: true, resave: true}));
++app.use(passport.initialize());
++app.use(passport.session());
+ app.use(flash());
+ 
++require('./auth/local-strategy.js');
++
+
+```
+
+In that way we let express now we are using passport, notice we are also linking a file with the Local Strategy definition. 
+
+Let's create a folder called `auth`:
+
+```bash
+$ mkdir auth
+```
+
+And create a file to store our local passport strategy, call it `./auth/local-strategy.js`:
+
+```javascript
+var passport = module.parent.exports.passport,
+  LocalStrategy = require('passport-local').Strategy,
+  dbConex  = exports.dbConex = module.parent.exports.dbConex,
+  Admins = require('../models/admins.js');
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.use('AdminLogin', new LocalStrategy(
+  {
+    usernameField: 'email',
+    passwordField: 'password'
+  },
+  function(username, password, done) {
+    Administrador.findOne({ email:username }, function(err, adm) {
+      if (err) { return done(err); }
+      if (!adm) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (!adm.authenticate(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, adm);
+    });
+  }
+));
+```
+
