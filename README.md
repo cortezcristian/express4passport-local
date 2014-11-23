@@ -466,11 +466,12 @@ If you enter `admin@admin.com : 123456` credentials you should be redirected to 
 
 It's possible to automate the kind of test mentioned before. Let's make our requirements turn to live. Let's create a couple of tests to probe the following:
 
-| Success Test | Failure Test |
-| :----        | :----        |
-| 1. Go to [http://localhost:3000/login](http://localhost:3000/login)
-  2. A
-             |              |
+#### Success Test
+
+```
+1. Go to [http://localhost:3000/login](http://localhost:3000/login)
+2.
+```
 
 ## Securitize Routes
 
