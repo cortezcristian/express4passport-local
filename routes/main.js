@@ -1,4 +1,5 @@
 var app = module.parent.exports.app;
+var passport = module.parent.exports.passport;
 var Persons = require('../models/persons.js');
 var Admins = require('../models/admins.js');
 
@@ -6,9 +7,10 @@ app.get('/login', function(req, res){
     res.render('login', { title: 'Login'});
 });
 
-app.post('/login', function(req, res){
-    res.json(req.body);
-});
+app.post('/login', passport.authenticate('AdminLogin', 
+    { successRedirect: '/list',
+      failureRedirect: '/login',
+      failureFlash: true }));
 
 app.get('/list', function(req, res){
     var msg = req.flash('message');

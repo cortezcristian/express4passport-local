@@ -403,7 +403,6 @@ And create a file to store our local passport strategy, call it `./auth/local-st
 ```javascript
 var passport = module.parent.exports.passport,
   LocalStrategy = require('passport-local').Strategy,
-  dbConex  = exports.dbConex = module.parent.exports.dbConex,
   Admins = require('../models/admins.js');
 
 passport.serializeUser(function(user, done) {
@@ -420,7 +419,7 @@ passport.use('AdminLogin', new LocalStrategy(
     passwordField: 'password'
   },
   function(username, password, done) {
-    Administrador.findOne({ email:username }, function(err, adm) {
+    Admins.findOne({ email:username }, function(err, adm) {
       if (err) { return done(err); }
       if (!adm) {
         return done(null, false, { message: 'Incorrect username.' });
@@ -434,3 +433,33 @@ passport.use('AdminLogin', new LocalStrategy(
 ));
 ```
 
+That's it! Our strategy is alredy defined! It's time for us to use it, just by changing the `/login` POST route definition in `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
++var passport = module.parent.exports.passport;
+var Persons = require('../models/persons.js');
+var Admins = require('../models/admins.js');
+
+app.get('/login', function(req, res){
+    res.render('login', { title: 'Login'});
+});
+
++app.post('/login', passport.authenticate('AdminLogin', 
++    { successRedirect: '/list',
++      failureRedirect: '/login',
++      failureFlash: true }));
+
+app.get('/list', function(req, res){
+    var msg = req.flash('message');
+    Persons.find({}, function(err, docs){
+        res.render('list', { title: 'List', persons: docs, flashmsg: msg});
+    });
+});
+``` 
+
+That's how we are informing the route which strategy we are going to use and what should we do in case of success and failure. Now restart the server and go test it! [http://localhost:3000/login](http://localhost:3000/login)
+
+If you enter `admin@admin.com : 123456` credentials you should be redirected to `/list`. If we enter wrong credentials, we should stay in [http://localhost:3000/login](http://localhost:3000/login).
+
+## Securitize Routes
