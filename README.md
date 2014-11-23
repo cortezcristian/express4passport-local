@@ -462,4 +462,16 @@ That's how we are informing the route which strategy we are going to use and wha
 
 If you enter `admin@admin.com : 123456` credentials you should be redirected to `/list`. If we enter wrong credentials, we should stay in [http://localhost:3000/login](http://localhost:3000/login).
 
+## Headless Test
+
+It's possible to automate the kind of test mentioned before. Let's make our requirements turn to live. Let's create a couple of tests to probe the following:
+
+| Success Test | Failure Test |
+| :----        | :----        |
+| 1. Go to [http://localhost:3000/login](http://localhost:3000/login)
+  2. A
+             |              |
+
 ## Securitize Routes
+
+It'll be good to add some extra validation, to prevent unauthorized users access to the CRUD urls.
