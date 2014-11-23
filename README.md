@@ -688,4 +688,49 @@ If we restart the server and login again, we'll be able to see a top bar menu:
 
 ![Logout Top Bar](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/logout-view-change.png)
 
-Now it's time to destroy session data.
+Now it's time to destroy session data. Every time users hit `/logout` url, we completly disconnect them in `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
+var passport = module.parent.exports.passport;
+var Persons = require('../models/persons.js');
+var Admins = require('../models/admins.js');
+
+var adminAuth = function(req, res, next){
+    //authorize role
+    if(typeof req.user != "undefined"){
+        next();
+    }else{
+        //Not authorized redirect
+        res.redirect('/');
+    }
+}
+
+app.use(function(req, res, next) {
+    res.locals.user = req.user;
+    next();
+});
+
+app.get('/login', function(req, res){
+    res.render('login', { title: 'Login'});
+});
+
+app.post('/login', passport.authenticate('AdminLogin', 
+    { successRedirect: '/list',
+      failureRedirect: '/login',
+      failureFlash: true }));
+
++app.get('/logout', function(req, res){
++    req.logout();
++    res.redirect('/');
++});
++
+app.get('/list', adminAuth, function(req, res){
+    var msg = req.flash('message');
+    Persons.find({}, function(err, docs){
+        res.render('list', { title: 'List', persons: docs, flashmsg: msg});
+    });
+});
+```
+
+Well... we are done! If you reach this point it means you successfully completed the authentication layer integration.

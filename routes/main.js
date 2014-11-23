@@ -27,6 +27,11 @@ app.post('/login', passport.authenticate('AdminLogin',
       failureRedirect: '/login',
       failureFlash: true }));
 
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});
+
 app.get('/list', adminAuth, function(req, res){
     var msg = req.flash('message');
     Persons.find({}, function(err, docs){
