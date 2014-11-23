@@ -547,4 +547,70 @@ We'll wrap all this test into a single test suite later on.
 
 ## Securitize Routes
 
-It'll be good to add some extra validation, to prevent unauthorized users access to the CRUD urls.
+It'll be good to add some extra validation, to prevent unauthorized users access to the CRUD urls. We can check if exists session data, for authorized users express saves data into `req.user`. We can create an interceptor method called `adminAuth` to validate session data in `./routes/main.js`:
+
+```javascript
+var app = module.parent.exports.app;
+var passport = module.parent.exports.passport;
+var Persons = require('../models/persons.js');
+var Admins = require('../models/admins.js');
+
++var adminAuth = function(req, res, next){
++    //authorize role
++    if(typeof req.user != "undefined"){
++        next();
++    }else{
++        //Not authorized redirect
++        res.redirect('/');
++    }
++}
++
+app.get('/login', function(req, res){
+    res.render('login', { title: 'Login'});
+});
+
+app.post('/login', passport.authenticate('AdminLogin', 
+    { successRedirect: '/list',
+      failureRedirect: '/login',
+      failureFlash: true }));
+
++app.get('/list', adminAuth, function(req, res){
+    var msg = req.flash('message');
+    Persons.find({}, function(err, docs){
+        res.render('list', { title: 'List', persons: docs, flashmsg: msg});
+    });
+});
+```
+
+For each route that we want to securitize we will need to add the `adminAuth` as second parameter, that's because route definition nature of express, that let you chain operations:
+
+```javascript
+app.get('/', operation1, operation2, operation3, function(req, res){
+    /**
+    * If code gets here it means all 3 operations passed and called next()
+    */
+    res.render('index', { title: 'Express'}); 
+});
+```
+Now if you try to access [http://localhost:3000/list](http://localhost:3000/list) without being logged-in, you'll be redirected to home. See you express terminal, and pay special attention to 304 redirects:
+
+```bash
+$ npm start
+
+> express4crud@0.0.1 start /var/www/express4passport-local
+> node ./bin/www
+
+GET / 304 330.696 ms - -
+GET /css/style.css 200 4.117 ms - 111
+GET /list 302 4.984 ms - 58
+GET / 304 37.074 ms - -
+GET /css/style.css 200 1.558 ms - 111
+GET /list 302 2.479 ms - 58
+GET / 304 16.337 ms - 
+
+```
+
+Please securitize all the routes by adding adminAuth as first operation, excepting `/` and `/login`.
+
+##
+
