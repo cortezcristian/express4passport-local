@@ -483,7 +483,7 @@ Es posible automatizar el tipo de test mencionados anteriormente. Hagamos que nu
 3. Resultado esperado: ser redirigido a http://localhost:3000/login
 ```
 
-Para poder hacer eso, podemos usar [zombie.js](https://github.com/assaf/zombie/) que es un framework liviano para hacer headless testing, eso significa un navegador emulados que corre sin interfaz grafica (sin GUI). Para instalarlo, ejecutemos:
+Para poder hacer esto, podemos usar [zombie.js](https://github.com/assaf/zombie/) que es un framework liviano para hacer headless testing, eso significa un navegador emulados que corre sin interfaz grafica (sin GUI). Para instalarlo, ejecutemos:
 
 ```bash
 $ npm install zombie --save-dev
@@ -593,7 +593,7 @@ app.get('/', operation1, operation2, operation3, function(req, res){
     res.render('index', { title: 'Express'}); 
 });
 ```
-Now if you try to access [http://localhost:3000/list](http://localhost:3000/list) without being logged-in, you'll be redirected to home. See you express terminal, and pay special attention to 304 redirects:
+Ahora si intentaras acceder a [http://localhost:3000/list](http://localhost:3000/list) sin estar loggeado, vas a ser redireccionado a la home. Inspecciona la terminal que esta corriendo express, y presta especial atención a los 304 redirects:
 
 ```bash
 $ npm start
@@ -611,11 +611,11 @@ GET / 304 16.337 ms -
 
 ```
 
-Please securitize all the routes by adding adminAuth as first operation, excepting `/` and `/login`.
+Por favor securiza todas las rutas agregando adminAuth como primera operación, exceptuando las rutas `/` y `/login`.
 
-## Destroying Session Data
+## Destruyendo los Datos de Sesión
 
-Once we login there's no way to logout let's add a log-out link. For doing that we can start modifying the main layout `./views/layout.jade`:
+Una vez que nos loggeamos no hay forma de desloggearnos agregremos un boton para poder salir. Para esto, necesitamos modificar el layout principal `./views/layout.jade`:
 
 ```jade
 doctype html
@@ -655,7 +655,7 @@ html(lang='en')
     block content
 ```
 
-Just added a menu list and some style. Let's make a user variable be available for all templates, by adding an interceptor into `./routes/main.js`:
+Solo hemos agregado un menu y algo de estilos. Hagamos ahora que la variable user este disponible para todas las templates, agregando un interceptor en `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -685,11 +685,11 @@ app.get('/login', function(req, res){
 app.post('/login', passport.authenticate('AdminLogin', 
 ```
 
-If we restart the server and login again, we'll be able to see a top bar menu:
+Si reiniciamos el servidor y nos loggeamos de vuelta, vamos a poder ver una barra en la parte superior:
 
 ![Logout Top Bar](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/logout-view-change.png)
 
-Now it's time to destroy session data. Every time users hit `/logout` url, we completly disconnect them in `./routes/main.js`:
+Ahora es tiempo de destruir los datos de sesión. Cada vez que los usuarios sean redirigidos a la url `/logout`, necesitamos desconectarlos completamente. Veamos los cambios necesarios en `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -734,11 +734,11 @@ app.get('/list', adminAuth, function(req, res){
 });
 ```
 
-Well... we are done! If you reach this point it means you successfully completed the authentication layer integration.
+Bueno... lo logramos! Si llegaste hasta este punto significa que haz completado la integración de la capa de autenticación satisfactoriamente.
 
 ## Final
 
-If you want to see the complete demo, you can go ahead and clone this repo.
+Si queres ver el demo completo, podes clonarte este repo.
 
 ```bash
 $ git clone git@github.com:cortezcristian/express4passport-local.git
@@ -746,4 +746,4 @@ $ git clone git@github.com:cortezcristian/express4passport-local.git
 
 ## Moving Forward
 
-During the past 2 tutorials we've been generating, different kind of tests. It'll be good to wrap them all inside a test suite with mocha. That'll be our next tutorial.
+Durante los últimos 2 tutoriales estivimos generando, diferentes tipos de tests. Seria bueno agruparlos dentro de una única suite de testing con mocha. Ese será nuestro próximo tutorial.
