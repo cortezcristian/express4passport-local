@@ -723,7 +723,7 @@ app.post('/login', passport.authenticate('AdminLogin',
 
 +app.get('/logout', function(req, res){
 +    req.logout();
-+    res.redirect('/');
++    res.redirect('/login');
 +});
 +
 app.get('/list', adminAuth, function(req, res){
