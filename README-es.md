@@ -71,7 +71,7 @@ null { __v: 0,
 
 ```
 
-Algo se ve bastante mal ahi. Se dieron cuenta? Guardar password en texto plano, no es una muy buena practica. Mejoremos entonces el modelo:
+Algo se ve bastante mal ahi. Se dieron cuenta? Guardar passwords en texto plano, no es una muy buena practica. Mejoremos entonces el modelo:
 
 ```javascript
 var mongoose = require('mongoose');
@@ -328,7 +328,7 @@ block content
     form > div { padding: 5px; }
 ```
 
-Finally we do set the POST url `/login` to receive the login form data, for now we add just a mock to catch and display data received. So we do add the following into `./routes/main.js`:
+Finalmente seteamos el método POST para la ruta `/login` para recibir los datos que envia el form, por ahora solamente vamos a hacer un mock para recibir y mostrar esos datos en json. Modifiquemos `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -348,19 +348,19 @@ app.get('/list', function(req, res){
     Persons.find({}, function(err, docs){
 ```
 
-To test all that you can simply go to [http://localhost:3000/login](http://localhost:3000/login), and by submitting data you should be able to get the data inserted back. Don't you worry, just go ahead with next step we'll get back to this POST url later.
+Para probar todo vamos a [http://localhost:3000/login](http://localhost:3000/login), y si submitimos el form deberiamos poder ver una respuesta con los datos enviados en texto plano. No te preocupes vamos a volver a cambiar la funcionalidad de esta ruta mas adelante, avancemos con el siguiente paso.
 
 ![Post Login JSON](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/login-form-json.png)
 
 ## Passport
 
-Passport is authentication middleware for Node.js, that works really well with Express, see [http://passportjs.org/](http://passportjs.org/). Passport let you define strategies, for this project we'll need Passport core, and passport-local package. So let's install them:
+Passport es un middleware de autenticación para Node.js, que funciona muy bien con Express, para saber mas podes visitar el sitio oficial [http://passportjs.org/](http://passportjs.org/). Passport te deja definir estrategias, para este projecto vamos a necestar el Passport core, y el paquete passport-local. Instalemos ambos:
 
 ```bash
 $ npm install --save passport passport-local
 ```
 
-Let's move on linking passport to our express webapp, in the `app.js` head we require passport:
+Sigamos adelante linkeando passport en nuestra aplicación, en la cabecera de `app.js` requerimos passport:
 
 ```javascript
 var express = require('express');
@@ -375,7 +375,7 @@ var flash = require('connect-flash');
 
 ```
 
-And then around line 33, we include the following:
+Cerca de la linea 33, podemos incluir lo siguiente:
 
 ```javascript
  app.use(bodyParser.urlencoded({
@@ -391,15 +391,15 @@ And then around line 33, we include the following:
 
 ```
 
-In that way we let express now we are using passport, notice we are also linking a file with the Local Strategy definition. 
+De esa forma le hacemos saber a Express que estamos usando passport, nota que tambien estamos requiriendo un arhivo que va a contener la defincion de la Local Strategy.
 
-Let's create a folder called `auth`:
+Creamos una carpeta llamada `auth`:
 
 ```bash
 $ mkdir auth
 ```
 
-And create a file to store our local passport strategy, call it `./auth/local-strategy.js`:
+Y creamos un archivo para alojar nuestra passport strategy, llamemoslo `./auth/local-strategy.js`:
 
 ```javascript
 var passport = module.parent.exports.passport,
@@ -434,7 +434,7 @@ passport.use('AdminLogin', new LocalStrategy(
 ));
 ```
 
-That's it! Our strategy is alredy defined! It's time for us to use it, just by changing the `/login` POST route definition in `./routes/main.js`:
+Eso es! Nuestra estrategia esta definida! Es tiempo para empezar a usarla, hagamos el siguiente cambio en la ruta `/login` correspondiente al método POST en `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -459,37 +459,37 @@ app.get('/list', function(req, res){
 });
 ``` 
 
-That's how we are informing the route which strategy we are going to use and what should we do in case of success and failure. Now restart the server and go test it! [http://localhost:3000/login](http://localhost:3000/login)
+Así es como le estamos informando a la ruta que estrategia vamos a usar, y que deberá hacer en caso de éxito (success) o fracaso (failure). Ahora reinicimoe el servidor y vamos a testear nuestro form! [http://localhost:3000/login](http://localhost:3000/login)
 
-If you enter `admin@admin.com : 123456` credentials you should be redirected to `/list`. If we enter wrong credentials, we should stay in [http://localhost:3000/login](http://localhost:3000/login).
+Si ingresamos las credenciales `admin@admin.com : 123456` deberiamos ser redirigido a `/list`. Si ingresamos las credenciales incorrectas deberiamos seguir en [http://localhost:3000/login](http://localhost:3000/login).
 
 ## Headless Test
 
-It's possible to automate the kind of test mentioned before. Let's make our requirements turn to live. Let's create a couple of tests to probe the following:
+Es posible automatizar el tipo de test mencionados anteriormente. Hagamos que nuestros requerimientos cobren vida. Creamos un par de tests para probar lo siguiente.
 
 `Success Test`
 
 ```
-1. Go to http://localhost:3000/login
-2. Insert email: admin@admin.com and password: 123456
-3. Expected result: you should be redirected to http://localhost:3000/panel
+1. Ir a http://localhost:3000/login
+2. Insertar email: admin@admin.com y password: 123456
+3. Resultado esperado: ser redirigido a http://localhost:3000/panel
 ```
 
 `Failure Test`
 
 ```
-1. Go to http://localhost:3000/login
-2. Insert email: admin@admin.com and password: incorrect
-3. Expected result: you should be redirected to http://localhost:3000/login
+1. Ir a http://localhost:3000/login
+2. Insertar email: admin@admin.com y password: incorrect
+3. Resultado esperado: ser redirigido a http://localhost:3000/login
 ```
 
-For doing that we can use [zombie.js](https://github.com/assaf/zombie/) that is a lightweight framework for headless testing, that is a browser emulation that runs without a graphic interface (no GUI). To install it, just run:
+Para poder hacer eso, podemos usar [zombie.js](https://github.com/assaf/zombie/) que es un framework liviano para hacer headless testing, eso significa un navegador emulados que corre sin interfaz grafica (sin GUI). Para instalarlo, ejecutemos:
 
 ```bash
 $ npm install zombie --save-dev
 ```
 
-Once installed we can create a file to make a quick test, call it `./test/headless-tests.js`:
+Una vez instalado podemos crear un archivo con un test sencillo, llamemoslo `./test/headless-tests.js`:
 
 ```javascript
 var Browser = require('zombie');
@@ -511,7 +511,7 @@ browser.visit('/login', function(err){
 
 ```
 
-In order to run this test, we need to have the webapp up and running in one console and open a second console:
+Para poder correr este test, necesitamos tener abierta nuestra webapp con express corriendo en una segunda consola:
 
 `zombie.js test`
 
@@ -522,7 +522,7 @@ Success Test:  /list
 
 ```
 
-Look in the terminal where you are running express, you'll be able to see zombie.js requests:
+Inspecciona la segunda termina donde esta corriendo express, y vas a poder ver las requests que dispara zombie.js:
 
 `express server`
 
@@ -538,17 +538,17 @@ GET /list 200 35.769 ms - 892
 
 ```
 
-We can do a similar test to probe, the failure case, just go ahead and change the password. And try again:
+Podemos ahcer un test similar para probar el otro caso, cuando falla, por ahora solo vamos a cambiar la linea que dice password y probar de nuevo:
 
 ```javascript
 +        .fill('password', 'incorrect')
 ```
 
-We'll wrap all this test into a single test suite later on.
+Mas adelante vamos a ordernar todos nuestros tests en una sola suite de testing.
 
-## Securitize Routes
+## Securizando Rutas
 
-It'll be good to add some extra validation, to prevent unauthorized users access to the CRUD urls. We can check if exists session data, for authorized users express saves data into `req.user`. We can create an interceptor method called `adminAuth` to validate session data in `./routes/main.js`:
+Seria bueno poder agregar alguna validación extra, que prevenga a usuarios no autorizados de acceder a las rutas del ABM (CRUD). Podemos checkear si existen datos de sesión, para todos los usuarios autenticados express guarda los datos dentro de `req.user`. Para esto cremos un método interceptor llamado `adminAuth` para validar que existan los datos de sesión en `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -583,7 +583,7 @@ app.post('/login', passport.authenticate('AdminLogin',
 });
 ```
 
-For each route that we want to securitize we will need to add the `adminAuth` as second parameter, that's because route definition nature of express, that let you chain operations:
+Para cada ruta que querramos securizar necesimos agregar `adminAuth` como segundo parámetro, eso es por la naturaleza de la definición de rutas de express que nos permite anidar operaciones:
 
 ```javascript
 app.get('/', operation1, operation2, operation3, function(req, res){
