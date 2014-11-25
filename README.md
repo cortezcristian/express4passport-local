@@ -24,7 +24,7 @@ Now we want to add a local authentication layer to protect the listed urls. We a
 8. Securitize CRUD routes (Route: `./routes/main.js`)
 9. Create Logout route (Route: `./routes/main.js`)
 10. Destroy Session Data
-11. Add Log-out button into the layout
+11. Add Sign-off button into the layout
 
 ![Task Graph](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/auth-layer-passport-local.png)
 
