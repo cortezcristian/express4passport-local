@@ -28,9 +28,9 @@ Ahora queremos agregar una capa de autenticación local para las urls listadas. 
 
 ![Task Graph](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/auth-layer-passport-local.png)
 
-## Create Admin Model
+## Admin Model
 
-Let's create a basic model `./models/admins.js` with basic credentials fields like so:
+Creamos un modelo bastante basico `./models/admins.js` con los campos mínimos e indispensables para alojar las credenciales:
 
 ```javascript
 var mongoose = require('mongoose');
@@ -46,7 +46,7 @@ var adminModel = mongoose.model('Admins', adminSchema);
 module.exports = adminModel;
 ```
 
-So we have the basic model, let's create a basic test `test/admins-test.js`:
+Teniendo ese modelo basico creamos entonces un test `test/admins-test.js`:
 ```javascript
 var Admin = require('../models/admins');
 var mongoose = require('mongoose');
@@ -60,7 +60,7 @@ a.save(function(err, doc){
 
 ```
 
-If we run this, we'll create an admin.
+Si lo corremos crearemos un admin.
 
 ```bash
 $ node test/admins-test.js
@@ -71,7 +71,7 @@ null { __v: 0,
 
 ```
 
-Something is really bad here. Did you noticed? We are storing a plain password, that's not good let's improve our model a little bit:
+Algo se ve bastante mal ahi. Se dieron cuenta? Guardar password en texto plano, no es una muy buena practica. Mejoremos entonces el modelo:
 
 ```javascript
 var mongoose = require('mongoose');
@@ -98,7 +98,7 @@ var adminModel = mongoose.model('Admins', adminSchema);
 
 module.exports = adminModel;
 ```
-We just added the [crypto module](http://nodejs.org/api/crypto.html) to use the MD5 hash creation method, we are also adding functionallity to add a [pre-save hook](http://mongoosejs.com/docs/api.html#schema_Schema-pre) to our schema definition. 
+Agregamos el [modulo crypto](http://nodejs.org/api/crypto.html) para usar su método de creación de hashes MD5, también estamos agregando un [pre-save hook](http://mongoosejs.com/docs/api.html#schema_Schema-pre) en nuestra definición de schema. 
 
 ```bash
 $ node test/admins-test.js 
@@ -108,7 +108,7 @@ null { __v: 0,
   _id: 546fed1f3561b0641e4eb34b }
 ```
 
-As we can see now if password is modified we automatically turn that into a MD5 hash. Let's create and authentication method so each admin can test passwords.
+Como podemos apreciar cada vez que el campo password es modificado, automáticamente lo guardamos convertido en un hash MD5. Creamos un método de autenticación para poder confirmar cuando un password ingresado es correcto.
 
 ```javascript
 var mongoose = require('mongoose');
@@ -140,7 +140,7 @@ var adminModel = mongoose.model('Admins', adminSchema);
 module.exports = adminModel;
 ```
 
-And we can test it by modifying our test `./test/admins-test.js`.
+Podemos testear el nuevo método modificando nuestro test `./test/admins-test.js`.
 
 ```javascript
 var Admin = require('../models/admins');
@@ -158,7 +158,7 @@ a.save(function(err, doc){
 
 ```
 
-We can test again our method to see if it works:
+Podemos comprobar si nuestro método funciona:
 
 ```bash
 $ node test/admins-test.js 
@@ -170,23 +170,24 @@ PasswordOK true
 PasswordFAIL false
 ```
 
-That's it! we have our admin model ready.
+Eso es todo! Tenemos nuestro modelo Admin listo.
 
 ## Adding Fixtures
 
-Fixtures a data-sets we store in our programming language and sync them with the DB when necessary. They are important specially when running tests, or if you don't want to show your webapp empty. In this example, we are going to use [mongoose-fixtures](https://github.com/powmedia/mongoose-fixtures) to pre-load persons and admins everytime we start the server.
+Los Fixtures son sets de datos que guardamos en un script y que sincronizamos con la BBDD cuando sea necesario. Son especialmente importantes cuando ejecutamos casos de prueba, o en los casos que queremos tener datos de ejemplo para nuestra applicación web. 
+En este ejemplo vamos a usar [mongoose-fixtures](https://github.com/powmedia/mongoose-fixtures) para pre-cargar datos de personas y adminstradores cada vez que se inicie el servidor.
 
 ```bash
 $ npm install --save mongoose-fixtures
 ```
 
-Let's create a folder to store our fixtures.
+Creamos una carpeta para guardar nuestros fixtures.
 
 ```bash
 $ mkdir fixtures
 ```
 
-Let's create a file to store persons personal data `fixtures/persons.js`:
+Creamos un archivo para guardar los datos de las personas `fixtures/persons.js`:
 
 ```javascript
 exports.Persons = [
@@ -196,7 +197,7 @@ exports.Persons = [
 ];
 ```
 
-We do need to add the new package into our `app.js`
+Requerimos el paquete en nuestra `app.js`
 
 ```javascript
 var express = require('express');
@@ -222,18 +223,18 @@ var app = exports.app = express();
 ....
 ```
 
-If we run the server again:
+Corremos el servidor de nuevo:
 ```bash
 $ npm start
 ```
 
-And go to [http://localhost:3000/list](http://localhost:3000/list):
+Y en nuestro navegador vamos a [http://localhost:3000/list](http://localhost:3000/list):
 
 ![Fixtures List](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/fixtures-list.png)
 
-As you can see persons fixtures have been preloaded, also notice that everytime you restart the server mongoose-fixtures will empty your collections and fill them with specified datasets. Try adding and/or removing and restarting the server.
+Como podras observar las fixtures de las personas se pre-cargaron y también podrás notar que cada vez que reinicies el servidor mongoose-fixtures vaciará primero las colleciones para luego rellenarlas con los set de datos especificados. Intenta borrar o agregar nuevas personas y reiniciar el server para experiementar este comportamiento.
 
-Let's do the same with the admins so we can have at least one administrator available to do our implementation. Add `fixtures/admins.js` file:
+Hagamos lo propio con los administradores, asi podemos tener por lo menos un administrador disponible durante nuestro trabajo de implementación. Agregamos lo siguiente al archivo `fixtures/admins.js`:
 
 ```javascript
 exports.Admins = [
@@ -242,7 +243,7 @@ exports.Admins = [
 
 ```
 
-And do the following changes into `app.js`
+Seguido del siguiente cambio en `app.js`
 
 ```javascript
 var express = require('express');
@@ -267,7 +268,7 @@ fixtures.load('./fixtures/persons.js');
 
 ```
 
-Include the model inside `./routes/main.js`:
+También incluimos la llamada al nuevo modelo en `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -283,15 +284,15 @@ app.get('/list', function(req, res){
 .....
 ```
 
-Congrats! We succesfully added fixtures into our app.
+Felicitaciones! Hemos agregado exitosamente fixtures en nuestra applicación.
 
 ## Login Form
 
-Let's create our login form.
+Creamos nuestro login form.
 
 ![Login Form](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/login-form.png)
 
-To begin, we need to add the `/login` route, into our `./routes/main.js`:
+Para empezar, tenemos que agregar la ruta `/login`, en nuestro `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -306,7 +307,7 @@ app.get('/list', function(req, res){
     var msg = req.flash('message');
 ```
 
-Secondlly, we do create the view file `./views/login.jade`:
+En segundo lugar, tenemos que crear un archivo vista `./views/login.jade`:
 
 ```javascript
 extends layout
