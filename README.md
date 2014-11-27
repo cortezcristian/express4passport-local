@@ -688,7 +688,7 @@ If we restart the server and login again, we'll be able to see a top bar menu:
 
 ![Logout Top Bar](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/logout-view-change.png)
 
-Now it's time to destroy session data. Every time users hit `/logout` url, we completly disconnect them in `./routes/main.js`:
+Now it's time to destroy session data. Every time users hit `/logout` url, we completly disconnect and we redirect `login` them in `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -722,7 +722,7 @@ app.post('/login', passport.authenticate('AdminLogin',
 
 +app.get('/logout', function(req, res){
 +    req.logout();
-+    res.redirect('/');
++    res.redirect('/login');
 +});
 +
 app.get('/list', adminAuth, function(req, res){

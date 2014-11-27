@@ -689,7 +689,7 @@ Si reiniciamos el servidor y nos loggeamos de vuelta, vamos a poder ver una barr
 
 ![Logout Top Bar](https://raw.githubusercontent.com/cortezcristian/express4passport-local/master/pics/logout-view-change.png)
 
-Ahora es tiempo de destruir los datos de sesión. Cada vez que los usuarios sean redirigidos a la url `/logout`, necesitamos desconectarlos completamente. Veamos los cambios necesarios en `./routes/main.js`:
+Ahora es tiempo de destruir los datos de sesión. Cada vez que los usuarios sean redirigidos a la url `/logout`, necesitamos desconectarlos completamente y nos redirecciona a `/login`. Veamos los cambios necesarios en `./routes/main.js`:
 
 ```javascript
 var app = module.parent.exports.app;
@@ -723,7 +723,7 @@ app.post('/login', passport.authenticate('AdminLogin',
 
 +app.get('/logout', function(req, res){
 +    req.logout();
-+    res.redirect('/');
++    res.redirect('/login');
 +});
 +
 app.get('/list', adminAuth, function(req, res){
