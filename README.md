@@ -497,7 +497,7 @@ var assert  = require('assert');
 Browser.localhost('localhost', 3000);
 
 // create new browser instance
-var browser = Browser.create();
+var browser = new Browser();
 
 browser.visit('/login', function(err){
     browser
